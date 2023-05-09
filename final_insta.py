@@ -138,3 +138,26 @@ print("Root Mean Squared Error:", rmse)
 category_encoded = ct.transform([["sports", 12, 5000, 10]])
 predicted_likes = model.predict(category_encoded)
 print("Predicted number of likes on the post", ":", predicted_likes*10)
+
+import pickle
+
+# Save the model and column transformer
+data = {"model": model, "ct": ct, "scaler": scaler}
+with open('saved_model.pkl', 'wb') as file:
+    pickle.dump(data, file)
+
+# Load the model and column transformer
+with open('saved_model.pkl', 'rb') as file:
+    data = pickle.load(file)
+
+model_loaded = data["model"]
+ct_loaded = data["ct"]
+scaler_loaded = data["scaler"]
+
+# Make predictions on new data
+category_encoded = ct.transform([["sports", 12, 5000, 10]])
+new_features_encoded = category_encoded.tolist()[0][2:] # extract numerical features from encoded values
+new_features_scaled = scaler_loaded.transform([new_features_encoded])
+predicted_likes = model_loaded.predict(new_features_scaled)
+
+print("Predicted number of likes on the post:", int(predicted_likes*maxvalue))
