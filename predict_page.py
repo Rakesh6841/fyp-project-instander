@@ -19,7 +19,6 @@ ct_loaded = data["ct"]
 scaler_loaded = data["scaler"]
 
 def show_predict_page():
-    
     st.title("Instagram Reach Analysis & Prediction")
     categories = ("food", "photography", "dance", "sports")
     hours = list(range(24))
@@ -27,7 +26,7 @@ def show_predict_page():
     hour = st.selectbox("Time of Post", hours)
     follower = st.number_input("No. of Followers", step=1)
     post = st.number_input("No. of Posts", step=1)
-    predicted_likes = random.uniform(int(follower/4),int(follower/3))
+    predicted_likes = load_model().predict(ct_loaded.transform([[category, hour, follower, post]]))
     ok = st.button("Predict Now")
     if ok:
-        st.subheader("The predicted likes : {:.6f}".format(predicted_likes))
+      st.subheader("The predicted likes : {:.6f}".format(predicted_likes))
